@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Login - TenderSys</title>
+    <link rel="stylesheet" href="/static/css/metro.css?v=3">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="/static/js/api.js?v=3" defer></script>
+</head>
+
+<body
+    style="background: #f8fafc; height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0;">
+
+    <div class="auth-container animate-fade">
+        <div class="auth-header">
+            <div class="auth-title">Tender<span style="color: #4f46e5;">Sys</span></div>
+            <div class="auth-subtitle">Professional Procurement Management</div>
+        </div>
+
+        <div class="minimal-tab-list">
+            <div class="minimal-tab active" id="tab-login" onclick="switchTab('login', this)">Login</div>
+            <div class="minimal-tab" id="tab-register" onclick="switchTab('register', this)">Registration</div>
+        </div>
+
+        <!-- Professional Login View -->
+        <div id="login-form">
+            <div style="margin-bottom: 20px;">
+                <label
+                    style="display:block; font-size: 0.8rem; font-weight: 700; color: #475569; margin-bottom: 8px; text-transform: uppercase;">Identifier</label>
+                <input type="text" id="l_user" class="minimal-input" placeholder="Enter username">
+            </div>
+            <div style="margin-bottom: 25px;">
+                <label
+                    style="display:block; font-size: 0.8rem; font-weight: 700; color: #475569; margin-bottom: 8px; text-transform: uppercase;">Credential</label>
+                <input type="password" id="l_pass" class="minimal-input" placeholder="••••••••">
+            </div>
+            <button class="minimal-btn" onclick="doLogin()">Authorize Access</button>
+        </div>
+
+        <!-- Professional Registration View -->
+        <div id="register-form" class="hidden">
+            <div style="display: flex; justify-content: center; margin-bottom: 25px;">
+                <div class="profile-upload-zone" onclick="document.getElementById('p_img').click()" id="p_preview"
+                    style="width: 100px; height: 100px; background: #fff; border: 1px solid #e2e8f0; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                    <i class="fa fa-user-plus" style="color: #cbd5e1; font-size: 1.5rem;"></i>
+                </div>
+            </div>
+            <input type="file" id="p_img" class="hidden" onchange="handleImgUpload(this)">
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                <div>
+                    <label
+                        style="display:block; font-size: 0.75rem; font-weight: 700; color: #475569; margin-bottom: 6px; text-transform: uppercase;">Username</label>
+                    <input type="text" id="r_user" class="minimal-input">
+                </div>
+                <div>
+                    <label
+                        style="display:block; font-size: 0.75rem; font-weight: 700; color: #475569; margin-bottom: 6px; text-transform: uppercase;">Password</label>
+                    <input type="password" id="r_pass" class="minimal-input">
+                </div>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label
+                    style="display:block; font-size: 0.75rem; font-weight: 700; color: #475569; margin-bottom: 6px; text-transform: uppercase;">Name</label>
+                <input type="text" id="r_name" class="minimal-input">
+            </div>
+            <div style="margin-bottom: 25px;">
+                <label
+                    style="display:block; font-size: 0.75rem; font-weight: 700; color: #475569; margin-bottom: 6px; text-transform: uppercase;">Designation
+                    / Role</label>
+                <select id="r_role" class="minimal-input" style="background: #f8fafc;">
+                    <option value="admin">Administrator</option>
+                    <option value="vendor">Service Vendor</option>
+                    <option value="technical">Technical Inspector</option>
+                    <option value="finance">Finance Manager</option>
+                    <option value="client">Agency Client</option>
+                </select>
+            </div>
+            <button class="minimal-btn" onclick="doRegister()" style="background: #4f46e5;">Submit Registration</button>
+        </div>
+    </div>
+
+    <script>
+        let pImgUrl = "";
+
+        function switchTab(tab, el) {
+            document.querySelectorAll('.minimal-tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById('login-form').classList.toggle('hidden', tab === 'register');
+            document.getElementById('register-form').classList.toggle('hidden', tab === 'login');
+        }
+
+        async function handleImgUpload(input) {
+            if (input.files[0]) {
+                const res = await api.upload(input.files[0]);
+                pImgUrl = res.url;
+                const prev = document.getElementById('p_preview');
+                prev.style.backgroundImage = `url(${res.url})`;
+                prev.style.backgroundSize = 'cover';
+                prev.innerHTML = '';
+            }
+        }
+
+        async function doLogin() {
+            try {
+                const user = await api.login(document.getElementById('l_user').value, document.getElementById('l_pass').value);
+                localStorage.setItem('user', JSON.stringify(user));
+                window.location.href = '/dashboard';
+            } catch (e) { alert("Authorization Error: Please check your credentials."); }
+        }
+
+        async function doRegister() {
+            if (!document.getElementById('r_user').value || !document.getElementById('r_pass').value) {
+                alert("Core fields are required.");
+                return;
+            }
+            const data = {
+                username: document.getElementById('r_user').value,
+                password: document.getElementById('r_pass').value,
+                full_name: document.getElementById('r_name').value || "New Participant",
+                role: document.getElementById('r_role').value,
+                email: document.getElementById('r_user').value + "@tendersys.internal",
+                profile_image: pImgUrl
+            };
+            try {
+                await api.register(data);
+                alert("Registration Complete. Please proceed to login.");
+                location.reload();
+            } catch (e) { alert("Registration Error: " + e.message); }
+        }
+    </script>
+</body>
+
+</html>

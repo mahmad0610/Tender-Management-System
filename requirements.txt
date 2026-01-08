@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+sqlalchemy
+pyside6
+requests
+python-multipart

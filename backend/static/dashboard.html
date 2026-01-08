@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Tender Management System</title>
+    <link rel="stylesheet" href="/static/css/metro.css?v=2">
+    <script src="/static/js/api.js?v=2" defer></script>
+    <script src="/static/js/components.js?v=2" defer></script>
+    <script src="/static/js/app.js?v=2" defer></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div style="display:flex; height:100vh;">
+        <!-- Premium Sidebar -->
+        <div class="sidebar sidebar-metro animate-fade" id="sidebar"
+            style="width:280px; display:flex; flex-direction:column;">
+            <div id="nav-menu" style="flex:1; overflow-y:auto;">
+                <!-- Profile Header & Menu Injected -->
+            </div>
+            <div style="padding:25px; cursor:pointer; border-top:1px solid rgba(255,255,255,0.1); opacity:0.8;"
+                onclick="logout()">
+                <i class="fa fa-power-off"></i> Logout
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content animate-fade"
+            style="flex:1; display:flex; flex-direction:column; background:var(--bg-color);">
+            <div class="header"
+                style="background:#fff; padding:15px; border-bottom:1px solid #ccc; display:flex; justify-content:space-between; align-items:center;">
+                <h2 id="page-title" style="margin:0; font-weight:300; text-transform:uppercase;">Dashboard</h2>
+                <div id="user-info" style="font-weight:bold; color:#2b5797;">User</div>
+            </div>
+            <div class="main-view" id="main-content" style="padding:20px; overflow-y:auto;">
+                <!-- Dynamic View -->
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
