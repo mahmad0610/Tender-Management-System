@@ -3,4 +3,7 @@ uvicorn
 sqlalchemy
 pyside6
 requests
+httpx
+pytest
+pydantic
 python-multipart
